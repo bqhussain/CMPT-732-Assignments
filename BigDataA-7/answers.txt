@@ -1,0 +1,45 @@
+Q1. What happened when you inserted another row with the same primary key as an existing row?
+
+Ans. It got overwritten, the initial data 'secondary' got replaced by 'double' without any warning.
+
+Q2. What happened when you query a keyspace with replication factor 1 and one node down? How did it behave with replication factor 2 and a node down?
+
+NoHostAvailable: ('Unable to complete the operation against any hosts', {<Host: 199.60.17.114 datacenter1>: Unavailable('Error from server: code=1000 [Unavailable exception] message="Cannot achieve consistency level ONE" info={\'required_replicas\': 1, \'alive_replicas\': 0, \'consistency\': \'ONE\'}',)})
+
+NoHostAvailable: ('Unable to complete the operation against any hosts', {<Host: 199.60.17.114 datacenter1>: Unavailable('Error from server: code=1000 [Unavailable exception] message="Cannot achieve consistency level ONE" info={\'required_replicas\': 1, \'alive_replicas\': 0, \'consistency\': \'ONE\'}',)})
+
+I got the above mentioned error for the following queries.
+select * from test where data='initial';
+select * from test where data='cinq';
+
+The data was not available with replication factor 1 because the node containing data was down, while with replication factor 2 it was able to return the results as the data was present in one of the nodes.
+
+Q3. How did the consistency level affect the results with the node up/down?
+
+Ans. 
+
+NoHostAvailable: ('Unable to complete the operation against any hosts', {<Host: 199.60.17.114 datacenter1>: Unavailable('Error from server: code=1000 [Unavailable exception] message="Cannot achieve consistency level ALL" info={\'required_replicas\': 2, \'alive_replicas\': 1, \'consistency\': \'ALL\'}',)})
+
+With CONSISTENCY set to ALL, if the data is not present in all the nodes then the above error would be given but with CONSISTENCY ONE, data needs to be present in one of the node for it to work.
+
+
+Q4. Which of the WHERE id=? values returned successfully with CONSISTENCY ALL when one of the nodes was down? Why do you think some could be returned but not others?
+
+Ans. With CONSISTENCY ONE; I didn't get any error after querying for all the ids from 1-7 and 9 but with CONSISTENCY ALL; I got the following error for id =3; At first it was not giving any error for all the nodes but after a while when the node containing id = 3; then it gave an error.
+
+Q5. What was the CREATE TABLE statement you used for the nasalogs table? What was the primary key you choose, and why?
+Ans.
+
+CREATE TABLE nasalogs (
+         ... host TEXT,
+         ... id UUID,
+         ... datetime TIMESTAMP,
+         ... path TEXT,
+         ... bytes INT,
+         ... PRIMARY KEY (host,id) );
+
+As it is mentioned on the assignment webpage that we would be aggregating by host in another assignment and also the host is not unique, I chose PRIMARY KEY as (host,id) as this would be unique for every row and would keep all the same hosts on the same node.
+
+Q6. What was the CQL query you used (or tried) to get the total number of bytes?
+Ans. Total number of bytes is the sum of all bytes therefore the query I tried is:
+SELECT SUM(bytes) FROM nasalogs;

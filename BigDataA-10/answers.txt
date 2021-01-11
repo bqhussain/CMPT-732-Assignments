@@ -1,0 +1,17 @@
+Q1. What happened to the HDFS file when one of the nodes it was stored on failed?
+
+Ans. The file was replicated on HDFS NODE 1 AND HDFS NODE 2, then we stopped HDFS NODE 1 and the file then got replicated on HDFS NODE 4 and HDFS NODE 2. The replication factor of 2 was set so when one node went down, HDFS replicated the file on another node just to maintain the replication factor of 2.
+
+Q2. How did YARN/MapReduce behave when one of the compute nodes disappeared?
+
+Ans.
+-- WARN cluster.YarnSchedulerBackend$YarnSchedulerEndpoint: Requesting driver to remove executor 3 for reason Container marked as failed: container_1605808716540_0001_01_000004 on host: yarn-nodemanager-3. Exit status: -100. Diagnostics: Container released on a lost node.
+-- WARN cluster.YarnSchedulerBackend$YarnSchedulerEndpoint: Requesting driver to remove executor 5 for reason Container marked as failed: container_1605808716540_0001_01_000006 on host: yarn-nodemanager-3. Exit status: -100. Diagnostics: Container released on a lost node.
+-- ERROR cluster.YarnScheduler: Lost executor 3 on yarn-nodemanager-3: Container marked as failed: container_1605808716540_0001_01_000004 on host: yarn-nodemanager-3. Exit status: -100. Diagnostics: Container released on a lost node.
+-- ERROR cluster.YarnScheduler: Lost executor 5 on yarn-nodemanager-3: Container marked as failed: container_1605808716540_0001_01_000006 on host: yarn-nodemanager-3. Exit status: -100. Diagnostics: Container released on a lost node.
+
+I deleted yarn-nodemanager-3 and got two warnings as mentioned above, the nodes become dead and the tasks which were to be performed by that node failed. YARN handled these failed tasks by transferring them to some other nodes. Yarn was able to take care of node failure automatically..
+
+Q3. Were there more things you'd like to try with this cluster, or anything you did try that you think should have been in this assignment?
+
+Ans. I would like to try running some code and meanwhile stop a node to check how a node failure effects the running code.

@@ -1,0 +1,42 @@
+1. What did you see in the execution plan for the “join in Spark” solution? Why was the execution so fast (and the memory usage so small)?
+
+Ans. The PushedFilters improves performance and it occurred thrice in the execution plan. The pushdown filter pushes the where/filters down to the datasource which allows filtering to be performed at the very low level which optimises the execution instead of dealing with the entire dataset after it is loaded into spark. This also prevents memory issues as it reduces the number of entries retrieved from the databases, hence improving overall efficiency.
+
+Q2. What was the CREATE TABLE statement you used for the orders_parts table?
+
+Ans.
+
+ CREATE TABLE orders_parts (
+         orderkey int, 
+         custkey int,
+         orderstatus text,
+         totalprice decimal,
+         orderdate date,
+         order_priority text,
+         clerk text,
+         ship_priority int,
+         comment text,
+         part_names set<text>,
+         PRIMARY KEY (orderkey) );
+
+Q3. What were the running times of the two tpch_orders_* programs on the tpch2 data on the cluster? These orderkeys have results in that data set: 2579142 2816486 586119 441985 2863331.
+
+Ans.
+
+Time for tpch_orders_df: 
+real	0m49.361s
+
+Time for tpch_orders_denorm.py:
+real	0m40.040s
+
+Results for 2579142 2816486 586119 441985 2863331:
+
+Order #441985 $160494.03: antique thistle light deep orchid, bisque misty firebrick green sky, blush papaya sandy lemon cornsilk, indian maroon white chiffon saddle, steel mint violet seashell lawn
+Order #586119 $21769.33: smoke black burnished steel midnight
+Order #2579142 $236102.74: blanched steel khaki gainsboro navajo, lime burnished lavender mint sandy, olive midnight sandy maroon mint, papaya cornsilk honeydew chartreuse plum, smoke salmon red pale linen, snow seashell tan powder beige
+Order #2816486 $144288.22: forest lime honeydew khaki slate, light blue dark azure salmon, thistle spring purple navajo pale
+Order #2863331 $29684.91: almond cyan grey hot saddle
+
+Q4. Consider the logic that you would have to implement to maintain the denormalised data (assuming that the orders table had the part_names column in the main data set). Write a few sentences on what you'd have to do when inserting/updating/deleting data in this case.
+
+Ans. We would have to write more queries for inserting/updating/deleting data in this case as we would have to write queries for all the other tables as well if we are writing them for any new table. Assuming that the orders table had the part_names column in the main data set so any operation performed in order table would also need to be performed in the parts table as the both contain the column part_names.

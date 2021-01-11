@@ -1,0 +1,94 @@
+1.What is your best guess for the slope and intercept of the streaming points being produced?
+Ans. 
+
+-------------------------------------------
+Batch: 1002
+-------------------------------------------
++-----------------+------------------+
+|             BETA|             ALPHA|
++-----------------+------------------+
+|61.12530169409221|-9.855866227224965|
++-----------------+------------------+
+
+-------------------------------------------
+Batch: 1005
+-------------------------------------------
++-----------------+------------------+
+|             BETA|             ALPHA|
++-----------------+------------------+
+|61.12534979763319|-9.863167918106114|
++-----------------+------------------+
+
+Best guess is:
+Slope = 61.0 , Intercept = -9.0
+
+
+Q2. Is your streaming program's estimate of the slope and intercept getting better as the program runs? (That is: is the program aggregating all of the data from the start of time, or only those that have arrived since the last output?)
+
+Ans. Yes, streaming program's estimate of the slope and intercept gets better and better as the program runs since it aggregates all of the data from the start of time.
+
+
+Q3. In the colour classification question, what were your validation scores for the RGB and LAB pipelines?
+
+Ans. 
+Validation score for RGB model: 0.609425
+Validation score for LAB model: 0.6773162939297125
+
+Q4. When predicting the tmax values, did you over-fit the training data (and for which training/validation sets)?
+
+Ans. 
+
+Tmax-1
+
+Validation dataset:
+r2 = 0.8412954259278461
+rmse = 4.866038477226684
+Testing
+r2 = 0.34149113659893715
+rmse = 10.491393372424229
+
+Tmax-2
+
+Validation dataset:
+r2 = 0.7865807276998013
+rmse = 5.951895308185125
+TESTING
+r2 = 0.7715416259493404
+rmse = 6.179536467069922
+
+RMSE for Testing of TMAX-1 is significantly higher than that of validation which shows overfitting.
+
+
+Q5.What were your testing scores for your model with and without the “yesterday's temperature” feature?
+Ans. 
+
+With yesterday for TMAX-1
+r2 = 0.8555902095223353
+rmse = 4.913044271863312
+Without yesterday for TMAX-1
+r2 = 0.4105032190924198
+rmse = 9.958935742205105
+
+With yesterday for TMAX-2
+r2 = 0.9091482070572398
+rmse = 3.896898641334301
+Without yesterday for TMAX-2
+r2 = 0.7825511104878926
+rmse = 6.048543499376934
+
+
+Q6. If you're using a tree-based model, you'll find a .featureImportances property that describes the relative importance of each feature (code commented out in weather_test.py; if not, skip this question). Have a look with and without the “yesterday's temperature” feature: do the results make sense and suggest that your model is making decisions reasonably? With “yesterday's temperature”, is it just predicting “same as yesterday”?
+
+Ans.
+
+For Tmax-2
+Without yesterday
+(4,[0,1,2,3],[0.37309233587461044,0.10708556350028471,0.11177503051703185,0.4080470701080729])
+With yesterday
+(5,[0,1,2,3,4],[0.032619018884486185,0.010534197731091198,0.006583083571979857,0.03479847498599663,0.915465224826446])
+
+The model seems to be working reasonably, as feature importance without yesterday shows the high importance being given to dayofyear while when yesterday_tmax is included the high importance is given to that feature. It is not predicting same as yesterday, the prediction I have with model trained on TMAX-1 dataset is:
+Predicted tmax for 2020-11-14 : 11.088787562576226
+
+
+

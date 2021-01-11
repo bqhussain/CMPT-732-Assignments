@@ -1,0 +1,25 @@
+1.How much of a difference did the .cache() make in your Reddit ETL code?
+
+Ans. I tried with and without cache on the cluster for reddit-3 and got the following times:
+real	0m38.179s without cache()
+real	0m31.949s with cache()
+
+The following times are for reddit-4 on cluster.
+
+real	0m39.418s with cache()
+real	0m51.745s without cache()
+
+So cache() made a difference of about 6 seconds in my code for reddit-3 and about 12 seconds for reddit-4. So with cache code is 6-12 seconds faster.
+
+
+2.When would .cache() make code slower than without?
+
+Ans. If cache() is used for storing RDD which will not be used later will make the code slower as we could be calling and occupying memory unnecessarily. Furthermore, it's better not to use cache() for RDDs which have very low computational cost. Also cache() would not be efficient if we are caching large amount of data for later use instead of minimised data, as the data would occupy more memory.
+
+3.Under what conditions will the broadcast join be faster than an actual join?
+
+Ans. It is best to use broadcast joins for joining a large data frame with a small data frame.
+
+4.When will the broadcast join be slower?
+
+Ans. Broadcast join will be slower for joining two large data frames. As broadcast needs to collect the data first, the larger the data the more time it would take to collect and send the data to the worker nodes, which could result in a bottleneck in the network and hence slow down the overall performance.

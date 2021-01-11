@@ -1,0 +1,52 @@
+1. In the Reddit averages execution plan, which fields were loaded? How was the average computed (and was a combiner-like step done)?
+
+Ans. Two fields were loaded namely, score and subreddit shown by FileScan JSON [score#16L, subreddit#18]. 
+Overall Physical plan consists of three steps:
+Firstly, two fields (score, subreddit) are read from the schema. In the second step, they were grouped by each subreddit and partial average was calculated, shown by functions =[partial_avg(score#16L), which is the combiner-like step in MapReduce. In the third and last step, aggregation was performed as the average function was applied on score and they were grouped by keys which is a reducer-like function in MapReduce.
+
+
+2. What was the running time for your Reddit averages implementations in the five scenarios described above? How much difference did Python implementation make (PyPy vs the default CPython)? Why was it large for RDDs but not for DataFrames?
+
+
+reddit_average.java 
+real	1m28.651s
+
+reddit_average_df.py with CPython                  
+real	0m49.384s					
+
+reddit_averages.py with CPython
+real	2m37.457s
+ 
+reddit_average_df.py with PYPY                    
+real	0m51.146s	
+				
+reddit_averages.py with PyPy
+real	0m46.668s
+
+There was a significant difference in timing for RDDs with CPython and PyPy. For data frames, the difference was only of about 2 seconds. PyPy did not make a significant difference with data frames because data frames use methods from pyspark sql and they are already optimised, while RDDs use python methods where their performance needs major improvement by PyPy.
+
+
+3. How much of a difference did the broadcast hint make to the Wikipedia popular code's running time (and on what data set)?
+
+Ans. For pagecount-3 I got the following timings:
+
+With broadcast
+real	1m3.137s
+user	0m25.744s
+sys	0m1.804s
+without
+real	1m14.400s
+user	0m30.892s
+sys	0m2.232s
+
+Broadcast made difference of about 10 seconds which is not very significant. For pagecount-1 broadcast took 2 seconds more than without broadcast as broadcast itself needs some time to collect data and send it to worker nodes, therefore broadcast is not suitable for small datasets.
+
+4. How did the Wikipedia popular execution plan differ with and without the broadcast hint?
+
+Ans. Execution plan with broadcast have lesser steps for aggregation and sorting and it uses BroadcastHashJoin, while without broadcast, execution plan have more steps for aggregation and sorting and it uses SortMergeJoin.
+
+
+5. For the weather data question, did you prefer writing the “DataFrames + Python methods” style, or the “temp tables + SQL syntax” style form solving the problem? Which do you think produces more readable code?
+
+Ans. I preferred writing "DataFrames + Python methods", because it helps write compact code instead of writing lengthy queries. Furthermore, with DataFrames and Python methods syntax errors can be identified at compile time while with SparkSQL syntax error can not be identified until runtime. The “temp tables + SQL syntax” produces more readable code which is easy to interpret.
+

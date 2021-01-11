@@ -1,0 +1,15 @@
+1. Are there any parts of the original WordCount that still confuse you? If so, what?
+
+Ans. No, all parts are clear.
+
+2.How did the output change when you submitted with -D mapreduce.job.reduces=3? Why would this be necessary if your job produced large output sets?
+
+Ans. There were three output files, instead of one. This would be necessary because for large output sets there would be a large number of key/value pairs and one reducer could take excessive time to process it.
+
+3.How was the -D mapreduce.job.reduces=0 output different?
+
+Ans. Mappers output was not aggregated without the reducer.
+
+4. Was there any noticeable difference in the running time of your RedditAverage with and without the combiner optimization?
+
+Ans. The data set was not large enough so the difference was not obvious, but without the combiner, the input to reducer was large, 9000+ records in my case, with the combiner, input reduced significantly to only 44 records, which shows improved performance.

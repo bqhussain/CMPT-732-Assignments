@@ -1,0 +1,25 @@
+1. In the WikipediaPopular class, it would be much more interesting to find the page that is most popular, not just the view count (as we did with Spark). What would be necessary to modify your class to do this?
+
+Ans: We would follow a similar approach like we did in RedditAverage. We would have to implement class called TextIntPairWritable which could return Text and Int pair. We will need to pass around pairs: the maximum view count we have seen, and the name of the page.
+Our mapper should be writing pairs of Text and TextIntPairWritable.
+
+2. An RDD has many methods: it can do many more useful tricks than were at hand with MapReduce. Write a sentence or two to explain the difference between .map and .flatMap. Which is more like the MapReduce concept of mapping?
+
+Ans. The map() is applied to each element of RDD and it returns the same number of elements as the RDD, while flatMap() is like map() but it also flattens the output which allows return of 0,1 or more elements for one element of RDD. To summarise map() is 1 to 1 while flatMap() is 1 to many. The map() is more like the MapReduce concept of mapping.
+
+3. Do the same for .reduce and .reduceByKey. Which is more like the MapReduce concept of reducing?
+
+Ans. The reduce() is an action function which returns aggregated or combined elements and produces single value as output, while reduceByKey() is a transformation function which  combines or aggregates elements based on their keys and return RDD as output. The reduceByKey() is more like the MapReduce concept of reducing.
+
+4.When finding popular Wikipedia pages, the maximum number of page views is certainly unique, but the most popular page might be a tie. What would your improved Python implementation do if there were two pages with the same highest number of page views in an hour? What would be necessary to make your code find all of the pages views the maximum number of times?
+
+Ans. After finding a maximum viewCount, store the maximum viewCount in a variable. Then iterate over the pages to find the list of page titles with same view count. Then concatenate the page title with the original string like     
+    if x > y:
+        maximum_value = x  #20160801-020000	[5243, 'Simon_Pegg']
+        for v in (x,y):
+            if v[0]==maximum_value[0]: #Check if the viewCount is same
+                x.append(v[1]) ## adding page name with same viewCount.
+        return x
+    else:
+        return y
+Final output would look like this: (20160801-100000 [5243, 'Antoninus_Pius', 'Simon_peg])
